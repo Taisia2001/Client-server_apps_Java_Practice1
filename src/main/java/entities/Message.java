@@ -6,7 +6,6 @@ import utils.Cryptor;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 
 public class Message {
     private int cType;

@@ -1,4 +1,5 @@
-import entities.Packet;
+
+import exceptions.IllegalCRCException;
 import utils.CRC16;
 import utils.Cryptor;
 
@@ -28,7 +29,7 @@ public class PacketReceiver {
                 .getShort();
         final short actualPacketCrc= CRC16.get_CRC16(Arrays.copyOfRange(packet, 0, 14));
         if(packetCrc!=actualPacketCrc)
-            throw new IllegalArgumentException("Illegal packet crc!!!");
+            throw new IllegalCRCException("Illegal packet crc!!!");
         System.out.println("0-13 bytes crc: "+packetCrc);
         final int cType = ByteBuffer.wrap(packet,16,4 )
                 .order(ByteOrder.BIG_ENDIAN)
@@ -45,12 +46,7 @@ public class PacketReceiver {
                 .getShort();
         final short actualMessageCrc= CRC16.get_CRC16(Arrays.copyOfRange(packet, 16, packet.length-2));
         if(messageCrc!=actualMessageCrc)
-            throw new IllegalArgumentException("Illegal message crc!!!");
+            throw new IllegalCRCException("Illegal message crc!!!");
         System.out.println("Message crc: "+messageCrc);
-    }
-
-    public static void main(String[] args) {
-        Packet p1 = new Packet((byte) 1,1,1,"hello");
-        decode(p1.getPacketBytes());
     }
 }

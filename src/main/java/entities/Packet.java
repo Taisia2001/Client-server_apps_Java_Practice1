@@ -1,12 +1,8 @@
 package entities;
 
 import utils.CRC16;
-import utils.Cryptor;
 
 import java.nio.ByteBuffer;
-import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-
 public class Packet {
 
     private static final byte bMagic = 0x13;

@@ -28,7 +28,7 @@ public class Cryptor {
             instance = new Cryptor();
         return instance;
     }
-//расшифровка
+
     public byte [] decrypt(byte [] data) {
         try {
             cipher.init(Cipher.DECRYPT_MODE, key,cipher.getParameters());

@@ -1,7 +1,8 @@
 
+import com.google.common.primitives.UnsignedLong;
 import exceptions.IllegalCRCException;
 import utils.CRC16;
-import utils.Cryptor;
+import utils.Decryptor;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -16,9 +17,9 @@ public class PacketReceiver {
         System.out.println("Magic byte: " + packet[0]);
         final int srcId = packet[1]&0xFF;
         System.out.println("Client id: " + srcId);
-        final long packetId = ByteBuffer.wrap(packet,2,8 )
+        final UnsignedLong packetId = UnsignedLong.asUnsigned(ByteBuffer.wrap(packet,2,8 )
                 .order(ByteOrder.BIG_ENDIAN)
-                .getLong();
+                .getLong());
         System.out.println("Packet id: " + packetId);
         final int messageLength = ByteBuffer.wrap(packet,10,4 )
                 .order(ByteOrder.BIG_ENDIAN)
@@ -39,7 +40,7 @@ public class PacketReceiver {
                 .order(ByteOrder.BIG_ENDIAN)
                 .getInt();
         System.out.println("bUserId: " + bUserId);
-        String message = new String(Cryptor.getInstance().decrypt(Arrays.copyOfRange(packet,24,16+messageLength)), StandardCharsets.UTF_16BE);
+        String message = new String(Decryptor.getInstance().decrypt(Arrays.copyOfRange(packet,24,16+messageLength)), StandardCharsets.UTF_16BE);
         System.out.println("Message: "+message);
         final short messageCrc = ByteBuffer.wrap(packet,16+messageLength,2 )
                 .order(ByteOrder.BIG_ENDIAN)

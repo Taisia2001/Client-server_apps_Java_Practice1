@@ -1,24 +1,22 @@
 package entities;
 
-import org.json.JSONObject;
-import utils.Cryptor;
+
+import utils.Encryptor;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.nio.charset.StandardCharsets;
 
 public class Message {
     private int cType;
     private int bUserId;
-    private JSONObject messageJSON;
+    private String message;
     private byte [] messageBytes;
-    private int messageLength;
+    private byte [] encryptedMessage;
 
     public Message(int cType, int bUserId, String message){
         this.cType=cType;
         this.bUserId=bUserId;
-        messageJSON = new JSONObject();
-        messageJSON.put("message",message);
+        this.message= message;
         createMessageBytes();
     }
 
@@ -30,25 +28,27 @@ public class Message {
         return cType;
     }
 
-    public JSONObject getMessageJSON() {
-        return messageJSON;
-    }
 
     public byte[] getMessageBytes() {
         return messageBytes;
     }
 
+    public byte[] getEncryptedMessage() {
+        return encryptedMessage;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
     private void createMessageBytes(){
-        byte[] bytes = Cryptor.getInstance().encrypt(messageJSON.get("message").toString().getBytes(StandardCharsets.UTF_16BE));
-        messageLength=bytes.length;
-        messageBytes = ByteBuffer.allocate(8 + messageLength).
+        encryptedMessage = Encryptor.getInstance().encrypt(this);
+        messageBytes = ByteBuffer.allocate(8 + encryptedMessage.length).
         order(ByteOrder.BIG_ENDIAN)
         .putInt(this.cType)
         .putInt(this.bUserId)
-        .put(bytes).array();
+        .put(encryptedMessage).array();
     }
-
-
 
 
 }

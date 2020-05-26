@@ -1,26 +1,29 @@
 package entities;
 
+import com.google.common.primitives.UnsignedLong;
 import utils.CRC16;
 
 import java.nio.ByteBuffer;
+
 public class Packet {
 
     private static final byte bMagic = 0x13;
     private byte bSrc;
-    private static long bPktId;
+    private UnsignedLong bPktId;
     private Message message;
     private byte [] packetBytes;
-    public Packet(byte bSrc, int cType, int bUserId, String message){
+    public Packet(byte bSrc,UnsignedLong bPktId, Message message){
         this.bSrc=bSrc;
-        this.message = new Message(cType, bUserId, message);
+        this.message =  message;
+        this.bPktId=bPktId;
         createBytePacket();
-        bPktId++;
+
     }
     void createBytePacket(){
         byte [] bb = ByteBuffer.allocate(14)
                 .put(bMagic)
                 .put(bSrc)
-                .putLong(bPktId)
+                .putLong(bPktId.longValue())
                 .putInt(message.getMessageBytes().length)
                 .array();
         packetBytes = ByteBuffer.allocate(18+message.getMessageBytes().length)
@@ -33,5 +36,9 @@ public class Packet {
 
     public byte[] getPacketBytes() {
         return packetBytes;
+    }
+
+    public Message getMessage() {
+        return message;
     }
 }
